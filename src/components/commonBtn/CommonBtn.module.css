@@ -1,0 +1,27 @@
+.button {
+  border-radius: var(--radius-m);
+  font-size: var(--fs-md);
+  color: var(--grey50);
+  background-color: var(--btn);
+  font-weight: 600;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
+  transition: background 0.2s ease, color 0.1s ease;
+  padding: 11px 22px;
+  line-height: 1.5;
+}
+.button.lg {
+  font-size: var(--fs-lg);
+  padding: 14px 30px;
+}
+.button.sm {
+  font-size: var(--fs-sm);
+  padding: 8px 14px;
+}
+.button:hover {
+  background-color: var(--primary);
+}
