@@ -12,7 +12,7 @@ export async function fetchData<T>(url: string): Promise<ResultType<T>> {
     return {
       status: true,
       code: 200,
-      data: data,
+      data: { ...data },
     };
   } catch (error) {
     console.error("Error fetching data:", error);

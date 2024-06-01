@@ -6,7 +6,11 @@ import { BgEffect } from "@/lib/bgEffect";
 
 import CommonBtn from "@/components/commonBtn";
 
-export default function BeforeStartTest() {
+interface BeforeStartTestProps {
+  onClick: () => void;
+}
+
+export default function BeforeStartTest({ onClick }: BeforeStartTestProps) {
   useEffect(() => {
     new BgEffect({
       canvasId: "bg_effect",
@@ -21,8 +25,8 @@ export default function BeforeStartTest() {
     });
   }, []);
 
-  const handleStartTest = () => {
-    console.log("test start");
+  const handleClick = () => {
+    onClick();
   };
 
   return (
@@ -30,7 +34,7 @@ export default function BeforeStartTest() {
       <canvas id="bg_effect" className="fixed inset-0 w-full h-full"></canvas>
       <article id={styles.before_start_test}>
         <h2>Start Test!</h2>
-        <CommonBtn size="lg" onClick={handleStartTest}>
+        <CommonBtn size="lg" onClick={handleClick}>
           테스트 시작
         </CommonBtn>
       </article>
