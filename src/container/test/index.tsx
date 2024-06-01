@@ -10,7 +10,7 @@ import { ResultType, fetchData } from "@/lib/callAPI";
 export default function Test({ testId }: { testId: number }) {
   const [testForm, setTestForm] = useState<TestFormType | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isTestStart, setIsTestStart] = useState<boolean>(false);
+  const [isTestStart, setIsTestStart] = useState<boolean>(true);
 
   useEffect(() => {
     fetchTestData();

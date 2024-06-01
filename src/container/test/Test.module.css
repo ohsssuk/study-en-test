@@ -13,3 +13,101 @@
   font-size: 32px;
   font-weight: 700;
 }
+
+#in_test {
+  padding-top: 40px;
+}
+#in_test .head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 20px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--grey300);
+}
+#in_test .head > div {
+  display: flex;
+  line-height: 24px;
+  font-size: var(--fs-xs);
+}
+#in_test .head > div > p:nth-child(2) {
+  font-size: var(--fs-lg);
+  margin-left: 10px;
+}
+#in_test .question-set {
+  padding: 20px;
+  font-size: var(--fs-lg);
+  line-height: 1.4;
+}
+#in_test .question-set .content h3 {
+  font-size: 30px;
+}
+#in_test .question-set .content p {
+  border: 1px solid var(--grey500);
+  padding: 20px 10px;
+  margin: 30px 0;
+}
+
+#in_test .question-set .question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+#in_test .question-set .question-list .question-title {
+  font-size: var(--fs-sm);
+}
+#in_test .question-set .question-list .question-content {
+  font-weight: 600;
+  margin-top: 4px;
+}
+#in_test .question-set .question-list .question-option {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#in_test .question-set .question-list .question-option > li {
+  position: relative;
+}
+#in_test .question-set .question-list .question-option > li label {
+  cursor: pointer;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+}
+#in_test .question-set .question-list .question-option > li label span {
+  width: 24px;
+  height: 24px;
+  line-height: 22px;
+  display: block;
+  text-align: center;
+  border-radius: 1000px;
+  margin-right: 8px;
+  border: 1px solid var(--text);
+  font-size: var(--fs-sm);
+}
+#in_test
+  .question-set
+  .question-list
+  .question-option
+  > li
+  input[type="radio"]:checked
+  + label {
+  text-decoration: underline;
+}
+#in_test
+  .question-set
+  .question-list
+  .question-option
+  > li
+  input[type="radio"]:checked
+  + label
+  span {
+  border: 1px solid var(--grey900);
+  background-color: var(--grey900);
+  color: var(--grey50);
+}
