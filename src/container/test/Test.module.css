@@ -28,6 +28,7 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--grey300);
+  background: var(--white);
 }
 #in_test .head > div {
   display: flex;
@@ -47,10 +48,14 @@
   font-size: 30px;
   font-weight: 700;
 }
-#in_test .question-set .content p {
+#in_test .question-set .content .detail {
   border: 1px solid var(--grey400);
   padding: 20px 10px;
   margin: 30px 0;
+}
+#in_test .question-set .content .words {
+  margin-top: 8px;
+  font-size: var(--fs-ml);
 }
 
 #in_test .question-set .question-list {
@@ -64,6 +69,15 @@
 #in_test .question-set .question-list .question-content {
   font-weight: 600;
   margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#in_test .question-set .question-list .question-content .correct-check {
+  font-size: var(--fs-xs);
+  color: var(--white);
+  padding: 4px 12px;
+  border-radius: 4px;
 }
 #in_test .question-set .question-list .question-option {
   margin-top: 8px;

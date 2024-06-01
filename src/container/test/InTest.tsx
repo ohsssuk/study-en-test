@@ -1,19 +1,49 @@
 "use client";
 
 import TestHead from "@/components/test/TestHead";
-import styles from "./Test.module.css";
-
 import CommonBtn from "@/components/commonBtn";
 import QuestionList from "@/components/test/QuestionList";
 import QuestionSetContent from "@/components/test/QuestionSetContent";
 
+import styles from "./Test.module.css";
+
+import { findItemFromListById } from "@/lib/common";
+
 interface InTestProps {
-  testForm: TestFormType;
+  questionSet: QuestionSetType;
+  answerSet: SetAnswerType[];
+  isCompleted: boolean;
+  checkAnswer: (answerSet: SetAnswerType[]) => void;
 }
 
-export default function InTest({ testForm }: InTestProps) {
-  const questionSet = testForm.questionSet[0];
-  console.log(questionSet);
+export default function InTest({
+  questionSet,
+  answerSet,
+  isCompleted,
+  checkAnswer,
+}: InTestProps) {
+  const addAnswerSet: SetAnswerType[] = [];
+
+  const handleSelectAnswer = (questionId: number, optionId: number) => {
+    const findItem = findItemFromListById(
+      addAnswerSet,
+      "questionId",
+      questionId
+    );
+
+    if (findItem) {
+      findItem.optionId = optionId;
+    } else {
+      addAnswerSet.push({
+        questionId,
+        optionId,
+      });
+    }
+  };
+
+  const handleClickCheck = () => {
+    checkAnswer(addAnswerSet);
+  };
 
   return (
     <article id={styles.in_test}>
@@ -23,13 +53,18 @@ export default function InTest({ testForm }: InTestProps) {
         <QuestionSetContent
           questionSetTitle={questionSet.questionSetTitle}
           questionSetContent={questionSet.questionSetContent}
+          questionSetHelp={isCompleted ? questionSet.questionSetHelp : null}
         />
-        <QuestionList questionList={questionSet.question} />
+        <QuestionList
+          questionList={questionSet.question}
+          onChange={handleSelectAnswer}
+          isCompleted={isCompleted}
+        />
       </section>
 
       <section className={styles["question-cta"]}>
         <div className={styles["btn-wrap"]}>
-          <CommonBtn isFull={true} size="lg">
+          <CommonBtn isFull={true} size="lg" onClick={handleClickCheck}>
             정답 확인
           </CommonBtn>
         </div>

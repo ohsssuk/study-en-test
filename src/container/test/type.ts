@@ -1,13 +1,15 @@
 interface QuestionOptionType {
   optionId: number;
   optionContent: string;
-  isAnswer: boolean;
 }
 
 interface QuestionType {
   questionId: number;
   questionTitle: string;
   questionContent: string;
+  questionCorrectOptionId: number;
+  questionUserSelectedOptionId: number;
+  isCorrect: boolean;
   questionOption: QuestionOptionType[];
 }
 
@@ -22,9 +24,20 @@ interface QuestionSetType {
   questionSetContent: string;
   questionSetHelp: QuestionSetHelpType;
   question: QuestionType[];
+  isCompleted: boolean;
+  score: number;
 }
 
 interface TestFormType {
   testId: number;
   questionSet: QuestionSetType[];
+}
+
+interface SetAnswerType {
+  questionId: number;
+  optionId: number;
+}
+interface TestAnswerType {
+  questionSetId: number;
+  answers: SetAnswerType[];
 }

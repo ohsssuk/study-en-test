@@ -53,6 +53,7 @@
 html#app {
   font-family: "Pretendard", sans-serif;
   color: var(--text);
+  padding-bottom: 100px;
 }
 
 .sr-only {

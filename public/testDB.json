@@ -14,16 +14,15 @@
           "questionId": 1,
           "questionTitle": "Question 1",
           "questionContent": "Where was the cat sitting?",
+          "questionCorrectOptionId": 2,
           "questionOption": [
             {
               "optionId": 1,
-              "optionContent": "On a bench",
-              "isAnswer": false
+              "optionContent": "On a bench"
             },
             {
               "optionId": 2,
-              "optionContent": "In the sun",
-              "isAnswer": true
+              "optionContent": "In the sun"
             }
           ],
           "questionHelp": {
@@ -35,26 +34,23 @@
           "questionId": 2,
           "questionTitle": "Question 2",
           "questionContent": "What filled the air with sound?",
+          "questionCorrectOptionId": 4,
           "questionOption": [
             {
               "optionId": 3,
-              "optionContent": "Dogs barking",
-              "isAnswer": false
+              "optionContent": "Dogs barking"
             },
             {
               "optionId": 4,
-              "optionContent": "Birds chirping",
-              "isAnswer": true
+              "optionContent": "Birds chirping"
             },
             {
               "optionId": 5,
-              "optionContent": "Cars honking",
-              "isAnswer": false
+              "optionContent": "Cars honking"
             },
             {
               "optionId": 6,
-              "optionContent": "People talking",
-              "isAnswer": false
+              "optionContent": "People talking"
             }
           ],
           "questionHelp": {
@@ -66,21 +62,19 @@
           "questionId": 3,
           "questionTitle": "Question 3",
           "questionContent": "What brought a sense of calm to the scene?",
+          "questionCorrectOptionId": 9,
           "questionOption": [
             {
               "optionId": 7,
-              "optionContent": "Strong winds",
-              "isAnswer": false
+              "optionContent": "Strong winds"
             },
             {
               "optionId": 8,
-              "optionContent": "Heavy rain",
-              "isAnswer": false
+              "optionContent": "Heavy rain"
             },
             {
               "optionId": 9,
-              "optionContent": "Gentle breeze",
-              "isAnswer": true
+              "optionContent": "Gentle breeze"
             }
           ],
           "questionHelp": {
