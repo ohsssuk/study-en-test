@@ -13,6 +13,7 @@
   transition: background 0.2s ease, color 0.1s ease;
   padding: 11px 22px;
   line-height: 1.5;
+  height: auto;
 }
 .button.lg {
   font-size: var(--fs-lg);

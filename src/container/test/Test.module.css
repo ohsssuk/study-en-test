@@ -1,0 +1,15 @@
+#before_start_test {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+  position: relative;
+}
+#before_start_test h2 {
+  font-size: 32px;
+  font-weight: 700;
+}
