@@ -1,8 +1,11 @@
 "use client";
 
+import TestHead from "@/components/test/TestHead";
 import styles from "./Test.module.css";
 
 import CommonBtn from "@/components/commonBtn";
+import QuestionList from "@/components/test/QuestionList";
+import QuestionSetContent from "@/components/test/QuestionSetContent";
 
 interface InTestProps {
   testForm: TestFormType;
@@ -13,59 +16,24 @@ export default function InTest({ testForm }: InTestProps) {
   console.log(questionSet);
 
   return (
-    <>
-      <article id={styles.in_test}>
-        <section className={styles.head}>
-          <div className={styles.timer}>
-            <p>소요 시간</p>
-            <p>00 : 00</p>
-          </div>
-          <div className={styles.progress}>
-            <p>진행</p>
-            <p>1/3</p>
-          </div>
-        </section>
+    <article id={styles.in_test}>
+      <TestHead seconds={5000} progressCount={1} currentCount={3} />
 
-        <section className={styles["question-set"]}>
-          <div className={styles.content}>
-            <h3>{questionSet.questionSetTitle}</h3>
-            <p>{questionSet.questionSetContent}</p>
-          </div>
+      <section className={styles["question-set"]}>
+        <QuestionSetContent
+          questionSetTitle={questionSet.questionSetTitle}
+          questionSetContent={questionSet.questionSetContent}
+        />
+        <QuestionList questionList={questionSet.question} />
+      </section>
 
-          <ul className={styles["question-list"]}>
-            {questionSet.question.map((question) => (
-              <li key={question.questionId}>
-                <p className={styles["question-title"]}>
-                  {question.questionTitle}
-                </p>
-                <p className={styles["question-content"]}>
-                  {question.questionContent}
-                </p>
-
-                <ul className={styles["question-option"]}>
-                  {question.questionOption.map((option) => (
-                    <li key={option.optionId}>
-                      <input
-                        type="radio"
-                        id={`question_option_${option.optionId}`}
-                        name={`question-check-${question.questionId}`}
-                        className={`sr-only ${styles["question-option-radio"]}`}
-                      />
-                      <label
-                        htmlFor={`question_option_${option.optionId}`}
-                        className={styles["question-option-label"]}
-                      >
-                        <span>A</span>
-                        {option.optionContent}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </article>
-    </>
+      <section className={styles["question-cta"]}>
+        <div className={styles["btn-wrap"]}>
+          <CommonBtn isFull={true} size="lg">
+            정답 확인
+          </CommonBtn>
+        </div>
+      </section>
+    </article>
   );
 }
