@@ -9,6 +9,8 @@ import { ResultType, fetchData } from "@/lib/callAPI";
 import { findItemFromListById } from "@/lib/common";
 import TestHead from "@/components/test/TestHead";
 import FinishTestResult from "./FinishTestResult";
+import { useRouter } from "next/navigation";
+import Loading from "@/components/loading";
 
 enum TestStatus {
   BEFORE_TEST = 1,
@@ -22,7 +24,8 @@ const answerSet: AnswerSetType[] = []; // 테스트 답안 전체 데이터
 const timeSet: TimeSetType[] = []; // 테스트 답안 소요 시간
 
 export default function Test({ testId }: { testId: number }) {
-  // initSeconds = 10000;
+  const router = useRouter();
+
   // 표시
   const [testForm, setTestForm] = useState<TestFormType | null>(null); // 전체 데이터
   const [currentQuestionSet, setCurrentQuestionSet] =
@@ -32,7 +35,7 @@ export default function Test({ testId }: { testId: number }) {
   // 사용자 기록
   const [testStatus, setTestStatus] = useState<TestStatus>(
     TestStatus.BEFORE_TEST
-  ); // 현태 테스트 상태
+  ); // 현태 테스트 진행 상태
 
   // UX
   const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩
@@ -53,15 +56,15 @@ export default function Test({ testId }: { testId: number }) {
   }, [isTimerOn]);
 
   useEffect(() => {
-    setCurrentQuestionSet(testForm?.questionSet[currentSetIndex] ?? null);
-    console.log(testForm?.questionSet[currentSetIndex]);
+    if (!testForm) {
+      return;
+    }
+
+    setCurrentQuestionSet(testForm.questionSet[currentSetIndex]);
   }, [testForm, currentSetIndex]);
 
-  useEffect(() => {
-    gradeTest();
-  }, [answerSet]);
-
   const fetchTestData = async () => {
+    setIsLoading(true);
     const { status, data }: ResultType<TestFormType> =
       await fetchData<TestFormType>("/testDB.json");
 
@@ -189,17 +192,22 @@ export default function Test({ testId }: { testId: number }) {
     setTestStatus(TestStatus.IN_TEST);
   };
 
-  const handleDeleteAnswerData = () => {};
-
-  if (isLoading || !currentQuestionSet) {
-    return <div>Loading...</div>;
-  } else if (!testForm) {
-    return <div>문제가 생겨 테스트 정보를 불러오지 못했습니다.</div>;
-  }
+  const handleDeleteAnswerData = () => {
+    answerSet.length = 0;
+    timeSet.length = 0;
+    initSeconds = 0;
+    fetchTestData();
+    setCurrentSetIndex(0);
+    setTestStatus(TestStatus.BEFORE_TEST);
+  };
 
   const getIsLastSet = (): boolean => {
     return currentSetIndex + 1 === testForm?.questionSet.length;
   };
+
+  if (isLoading || !testForm || !currentQuestionSet) {
+    return <Loading />;
+  }
 
   return (
     <>

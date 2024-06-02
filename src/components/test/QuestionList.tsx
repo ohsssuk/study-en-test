@@ -22,7 +22,7 @@ export default function QuestionList({
     question: QuestionType;
     option: QuestionOptionType;
   }) => {
-    return isCompleted && !question.isCorrect
+    return isCompleted
       ? option.optionId === question.questionCorrectOptionId
         ? {
             backgroundColor: "#415ef3",
