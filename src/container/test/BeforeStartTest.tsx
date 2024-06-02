@@ -7,10 +7,14 @@ import { BgEffect } from "@/lib/bgEffect";
 import CommonBtn from "@/components/commonBtn";
 
 interface BeforeStartTestProps {
-  onClick: () => void;
+  startTest: () => void;
+  isExsistSavedData: boolean;
 }
 
-export default function BeforeStartTest({ onClick }: BeforeStartTestProps) {
+export default function BeforeStartTest({
+  startTest,
+  isExsistSavedData,
+}: BeforeStartTestProps) {
   useEffect(() => {
     new BgEffect({
       canvasId: "bg_effect",
@@ -25,17 +29,17 @@ export default function BeforeStartTest({ onClick }: BeforeStartTestProps) {
     });
   }, []);
 
-  const handleClick = () => {
-    onClick();
+  const handleClickStartTest = () => {
+    startTest();
   };
 
   return (
     <>
       <canvas id="bg_effect" className="fixed inset-0 w-full h-full"></canvas>
       <article id={styles.before_start_test}>
-        <h2>Start Test!</h2>
-        <CommonBtn size="lg" onClick={handleClick}>
-          테스트 시작
+        <h2>{!isExsistSavedData ? "Start" : "Continue"} Test!</h2>
+        <CommonBtn size="lg" onClick={handleClickStartTest}>
+          {!isExsistSavedData ? "테스트 시작" : "이어서 계속 하기"}
         </CommonBtn>
       </article>
     </>

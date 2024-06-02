@@ -11,6 +11,11 @@ import TestHead from "@/components/test/TestHead";
 import FinishTestResult from "./FinishTestResult";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
+import {
+  clearLocalStorage,
+  loadDataFromLocalStorage,
+  saveDataToLocalStorage,
+} from "@/lib/storage";
 
 enum TestStatus {
   BEFORE_TEST = 1,
@@ -18,10 +23,14 @@ enum TestStatus {
   FINISH_TEST = 3,
 }
 
-let initSeconds: number = 0;
+enum StorageKey {
+  TIME = "testQuestionSetTime",
+  ANSWER = "testQuestionAnswer",
+}
+
 let partSeconds: number = 0; // 세트별 경과 시간
-const answerSet: AnswerSetType[] = []; // 테스트 답안 전체 데이터
-const timeSet: TimeSetType[] = []; // 테스트 답안 소요 시간
+let answerSet: AnswerSetType[] = []; // 테스트 답안 전체 데이터
+let timeSet: TimeSetType[] = []; // 테스트 답안 소요 시간
 
 export default function Test({ testId }: { testId: number }) {
   const router = useRouter();
@@ -36,12 +45,15 @@ export default function Test({ testId }: { testId: number }) {
   const [testStatus, setTestStatus] = useState<TestStatus>(
     TestStatus.BEFORE_TEST
   ); // 현태 테스트 진행 상태
+  const [initSeconds, setInitSeconds] = useState<number>(0);
 
   // UX
   const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩
   const [isTimerOn, setIsTimerOn] = useState<boolean>(false); // 타이머 진행중
+  const [isExsistSavedData, setIsExsistSavedData] = useState<boolean>(false); // 진행중이던 테스트가 있는지
 
   useEffect(() => {
+    fetchSavedData();
     fetchTestData();
   }, []);
 
@@ -74,9 +86,39 @@ export default function Test({ testId }: { testId: number }) {
     setIsLoading(false);
   };
 
+  const fetchSavedData = () => {
+    answerSet = loadDataFromLocalStorage(StorageKey.ANSWER, answerSet);
+    timeSet = loadDataFromLocalStorage(StorageKey.TIME, timeSet);
+
+    if (answerSet.length > 0 && timeSet.length > 0) {
+      setIsExsistSavedData(true);
+    }
+  };
+
   const handleStartTest = () => {
     setTestStatus(TestStatus.IN_TEST);
-    setIsTimerOn(true);
+
+    if (isExsistSavedData) {
+      useExistData();
+    } else {
+      setIsTimerOn(true);
+    }
+  };
+
+  const useExistData = () => {
+    setInitSeconds(
+      timeSet.reduce((accumulator, set) => {
+        return accumulator + set.seconds;
+      }, 0)
+    );
+    gradeTest();
+
+    if (testForm?.isCompleted) {
+      setTestStatus(TestStatus.FINISH_TEST);
+    } else {
+      setCurrentSetIndex(timeSet.length);
+      setIsTimerOn(true);
+    }
   };
 
   const handleNextSet = () => {
@@ -89,11 +131,16 @@ export default function Test({ testId }: { testId: number }) {
         return prevIndex + 1;
       });
       setTestStatus(TestStatus.IN_TEST);
-      setIsTimerOn(true);
+
+      if (!testForm?.isCompleted) {
+        setIsTimerOn(true);
+      }
     }
   };
 
   const handleCheckAnswer = (addAnswerSet: AnswerSetType[]) => {
+    setIsTimerOn(false);
+
     // 답안 전체 기록 갱신
     addAnswerSet.map((add) => {
       const { questionId, optionId } = add;
@@ -108,9 +155,10 @@ export default function Test({ testId }: { testId: number }) {
       });
     }
 
-    gradeTest(); // 저장된 시간 기록과 답안지를 가지고 채점
+    saveDataToLocalStorage(StorageKey.TIME, timeSet);
+    saveDataToLocalStorage(StorageKey.ANSWER, answerSet);
 
-    setIsTimerOn(false);
+    gradeTest(); // 저장된 시간 기록과 답안지를 가지고 채점
   };
 
   const gradeTest = () => {
@@ -127,6 +175,8 @@ export default function Test({ testId }: { testId: number }) {
       newTestForm.score = 0;
 
       const { questionSet: newQuestionSet } = newTestForm;
+      newTestForm.isCompleted = timeSet.length === newQuestionSet.length;
+
       newQuestionSet.forEach((set) => {
         const findTime = findItemFromListById(
           timeSet,
@@ -175,6 +225,13 @@ export default function Test({ testId }: { testId: number }) {
       return;
     }
 
+    setIsTimerOn(false);
+    setInitSeconds(
+      timeSet.reduce((accumulator, set) => {
+        return accumulator + set.seconds;
+      }, 0)
+    );
+
     const findSet = findItemFromListById(
       testForm.questionSet,
       "questionSetId",
@@ -193,11 +250,14 @@ export default function Test({ testId }: { testId: number }) {
   };
 
   const handleDeleteAnswerData = () => {
+    clearLocalStorage(StorageKey.TIME);
+    clearLocalStorage(StorageKey.ANSWER);
     answerSet.length = 0;
     timeSet.length = 0;
-    initSeconds = 0;
+    setInitSeconds(0);
     fetchTestData();
     setCurrentSetIndex(0);
+    setIsExsistSavedData(false);
     setTestStatus(TestStatus.BEFORE_TEST);
   };
 
@@ -205,13 +265,13 @@ export default function Test({ testId }: { testId: number }) {
     return currentSetIndex + 1 === testForm?.questionSet.length;
   };
 
-  if (isLoading || !testForm || !currentQuestionSet) {
+  if (isLoading || !testForm) {
     return <Loading />;
   }
 
   return (
     <>
-      {testStatus === TestStatus.IN_TEST ? (
+      {testStatus === TestStatus.IN_TEST && currentQuestionSet ? (
         <>
           <TestHead
             initSeconds={initSeconds}
@@ -233,7 +293,10 @@ export default function Test({ testId }: { testId: number }) {
           />
         </>
       ) : testStatus === TestStatus.BEFORE_TEST ? (
-        <BeforeStartTest onClick={handleStartTest} />
+        <BeforeStartTest
+          startTest={handleStartTest}
+          isExsistSavedData={isExsistSavedData}
+        />
       ) : (
         <FinishTestResult
           testForm={testForm}

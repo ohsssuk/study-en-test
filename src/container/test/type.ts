@@ -39,6 +39,7 @@ interface QuestionSetType {
 interface TestFormType {
   testId: number;
   score: number;
+  isCompleted: boolean;
   questionSet: QuestionSetType[];
 }
 
