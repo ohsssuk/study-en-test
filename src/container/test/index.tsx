@@ -99,13 +99,13 @@ export default function Test({ testId }: { testId: number }) {
     setTestStatus(TestStatus.IN_TEST);
 
     if (isExsistSavedData) {
-      useExistData();
+      loadExistData();
     } else {
       setIsTimerOn(true);
     }
   };
 
-  const useExistData = () => {
+  const loadExistData = () => {
     setInitSeconds(
       timeSet.reduce((accumulator, set) => {
         return accumulator + set.seconds;
