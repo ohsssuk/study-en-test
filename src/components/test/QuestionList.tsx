@@ -64,8 +64,8 @@ export default function QuestionList({
                 <input
                   type="radio"
                   id={`question_option_${option.optionId}`}
-                  name={`question-check-${question.questionId}`}
-                  className={`sr-only ${styles["question-option-radio"]}`}
+                  name={`question_check_${question.questionId}`}
+                  className={`sr-only`}
                   disabled={isCompleted ? true : false}
                   onChange={() =>
                     handleChangeAnswer(question.questionId, option.optionId)
@@ -93,8 +93,8 @@ export default function QuestionList({
               />
               {question.questionHelp.words && (
                 <ul className={styles.words}>
-                  {question.questionHelp.words.map((word) => (
-                    <li>
+                  {question.questionHelp.words.map((word, index) => (
+                    <li key={index}>
                       <p
                         dangerouslySetInnerHTML={{
                           __html: word,

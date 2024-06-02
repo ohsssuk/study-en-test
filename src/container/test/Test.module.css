@@ -14,10 +14,7 @@
   font-weight: 700;
 }
 
-#in_test {
-  padding-top: 40px;
-}
-#in_test .head {
+#test_head {
   position: fixed;
   top: 0;
   left: 0;
@@ -29,15 +26,20 @@
   align-items: center;
   border-bottom: 1px solid var(--grey300);
   background: var(--white);
+  z-index: 100;
 }
-#in_test .head > div {
+#test_head > div {
   display: flex;
   line-height: 24px;
   font-size: var(--fs-xs);
 }
-#in_test .head > div > p:nth-child(2) {
+#test_head > div > p:nth-child(2) {
   font-size: var(--fs-lg);
   margin-left: 10px;
+}
+
+#in_test {
+  padding-top: 40px;
 }
 #in_test .question-set {
   padding: 20px;
@@ -127,7 +129,7 @@
   background-color: var(--grey900);
   color: var(--grey50);
 }
-#in_test .question-set .question-list .question-help {
+#in_test .help {
   margin-top: 20px;
   line-height: 1.6;
 }

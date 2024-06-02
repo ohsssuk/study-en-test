@@ -1,15 +1,32 @@
+"use client";
+
 import styles from "@/container/test/Test.module.css";
+import { useEffect, useState } from "react";
 
 interface TestHeadProps {
-  seconds: number;
+  initSeconds: number;
   progressCount: number;
   currentCount: number;
+  isTimerOn: boolean;
 }
 export default function TestHead({
-  seconds,
+  initSeconds,
   progressCount,
   currentCount,
+  isTimerOn,
 }: TestHeadProps) {
+  const [seconds, setSeconds] = useState<number>(initSeconds);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (isTimerOn) {
+        setSeconds((prevSeconds) => prevSeconds + 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isTimerOn]);
+
   const formatTime = (seconds: number): string => {
     const minutes: number = Math.floor(seconds / 60);
     const remainingSeconds: number = seconds % 60;
@@ -25,7 +42,7 @@ export default function TestHead({
   };
 
   return (
-    <section className={styles.head}>
+    <section id={styles["test_head"]}>
       <div className={styles.timer}>
         <p>소요 시간</p>
         <p>{formatTime(seconds)}</p>

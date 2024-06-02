@@ -11,18 +11,18 @@ import { findItemFromListById } from "@/lib/common";
 
 interface InTestProps {
   questionSet: QuestionSetType;
-  answerSet: SetAnswerType[];
   isCompleted: boolean;
-  checkAnswer: (answerSet: SetAnswerType[]) => void;
+  checkAnswer: (answerSet: AnswerSetType[]) => void;
+  nextSet: () => void;
 }
 
 export default function InTest({
   questionSet,
-  answerSet,
   isCompleted,
   checkAnswer,
+  nextSet,
 }: InTestProps) {
-  const addAnswerSet: SetAnswerType[] = [];
+  const addAnswerSet: AnswerSetType[] = [];
 
   const handleSelectAnswer = (questionId: number, optionId: number) => {
     const findItem = findItemFromListById(
@@ -39,16 +39,19 @@ export default function InTest({
         optionId,
       });
     }
+    console.log(addAnswerSet);
   };
 
-  const handleClickCheck = () => {
-    checkAnswer(addAnswerSet);
+  const handleClickCTA = () => {
+    if (isCompleted) {
+      nextSet();
+    } else {
+      checkAnswer(addAnswerSet);
+    }
   };
 
   return (
     <article id={styles.in_test}>
-      <TestHead seconds={5000} progressCount={1} currentCount={3} />
-
       <section className={styles["question-set"]}>
         <QuestionSetContent
           questionSetTitle={questionSet.questionSetTitle}
@@ -64,8 +67,8 @@ export default function InTest({
 
       <section className={styles["question-cta"]}>
         <div className={styles["btn-wrap"]}>
-          <CommonBtn isFull={true} size="lg" onClick={handleClickCheck}>
-            정답 확인
+          <CommonBtn isFull={true} size="lg" onClick={handleClickCTA}>
+            {isCompleted ? "다음 문제" : "정답 확인"}
           </CommonBtn>
         </div>
       </section>

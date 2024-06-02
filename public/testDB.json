@@ -83,6 +83,187 @@
           }
         }
       ]
+    },
+    {
+      "questionSetId": 2,
+      "questionSetTitle": "Question 4-6",
+      "questionSetContent": "The mountain stood tall, its peak shrouded in mist. A river flowed gently at its base, winding through the valley. The air was crisp and fresh, filled with the scent of pine trees.",
+      "questionSetHelp": {
+        "content": "산은 높이 서 있었고, 그 정상은 안개로 가려져 있었습니다. 강은 산기슭에서 부드럽게 흐르며 계곡을 따라 굽이쳤습니다. 공기는 상쾌하고 신선하며, 소나무 향기로 가득 차 있었습니다.",
+        "words": ["<strong>shroud</strong> 감싸다, 덮다"]
+      },
+      "question": [
+        {
+          "questionId": 4,
+          "questionTitle": "Question 4",
+          "questionContent": "What was the peak of the mountain shrouded in?",
+          "questionCorrectOptionId": 11,
+          "questionOption": [
+            {
+              "optionId": 10,
+              "optionContent": "Snow"
+            },
+            {
+              "optionId": 11,
+              "optionContent": "Mist"
+            }
+          ],
+          "questionHelp": {
+            "content": "The mountain stood tall, its peak shrouded in mist.<br><strong>산 정상은 안개로<i>shrouded in mist</i></strong> 덮여 있었다는 묘사가 있기 때문에 정답은 B입니다.",
+            "words": []
+          }
+        },
+        {
+          "questionId": 5,
+          "questionTitle": "Question 5",
+          "questionContent": "Where did the river flow?",
+          "questionCorrectOptionId": 13,
+          "questionOption": [
+            {
+              "optionId": 12,
+              "optionContent": "Over the hill"
+            },
+            {
+              "optionId": 13,
+              "optionContent": "At the mountain's base"
+            },
+            {
+              "optionId": 14,
+              "optionContent": "Through the forest"
+            },
+            {
+              "optionId": 15,
+              "optionContent": "Under the bridge"
+            }
+          ],
+          "questionHelp": {
+            "content": "A river flowed gently at its base, winding through the valley.<br><strong>강이 산기슭<i>at the mountain's base</i></strong>에서 부드럽게 흐르고 있다는 묘사가 있기 때문에 정답은 B입니다.",
+            "words": []
+          }
+        },
+        {
+          "questionId": 6,
+          "questionTitle": "Question 6",
+          "questionContent": "What filled the air with a fresh scent?",
+          "questionCorrectOptionId": 18,
+          "questionOption": [
+            {
+              "optionId": 16,
+              "optionContent": "Wildflowers"
+            },
+            {
+              "optionId": 17,
+              "optionContent": "Morning dew"
+            },
+            {
+              "optionId": 18,
+              "optionContent": "Pine trees"
+            }
+          ],
+          "questionHelp": {
+            "content": "The air was crisp and fresh, filled with the scent of pine trees.<br><strong>공기는 상쾌하고 신선하며<i>filled with the scent of pine trees</i></strong>소나무 향기로 가득 차 있다는 묘사가 있기 때문에 정답은 C입니다.",
+            "words": []
+          }
+        }
+      ]
+    },
+    {
+      "questionSetId": 3,
+      "questionSetTitle": "Question 7-9",
+      "questionSetContent": "In the heart of the forest, a clear stream trickled over rocks. The sunlight filtered through the dense canopy, creating dancing patterns on the forest floor. Wildlife thrived, with deer grazing and birds singing joyfully.",
+      "questionSetHelp": {
+        "content": "숲의 중심부에는 맑은 시냇물이 바위 위로 졸졸 흐르고 있었습니다. 햇빛은 빽빽한 숲 덮개를 통해 여과되어 숲 바닥에 춤추는 패턴을 만들어냈습니다. 야생동물들이 번성하며, 사슴은 풀을 뜯고 새들은 즐겁게 노래를 불렀습니다.",
+        "words": [
+          "<strong>trickle</strong> 졸졸 흐르다",
+          "<strong>canopy</strong> 덮개, 나무의 우거진 윗부분",
+          "<strong>thrive</strong> 번성하다"
+        ]
+      },
+      "question": [
+        {
+          "questionId": 7,
+          "questionTitle": "Question 7",
+          "questionContent": "What was trickling over the rocks?",
+          "questionCorrectOptionId": 20,
+          "questionOption": [
+            {
+              "optionId": 19,
+              "optionContent": "A waterfall"
+            },
+            {
+              "optionId": 20,
+              "optionContent": "A stream"
+            }
+          ],
+          "questionHelp": {
+            "content": "In the heart of the forest, a clear stream trickled over rocks.<br><strong>숲의 중심부에 있는 맑은 시냇물이<i>clear stream</i></strong> 바위 위로 졸졸 흐르고 있다는 묘사가 있기 때문에 정답은 B입니다.",
+            "words": [
+              "<strong>trickle</strong> 졸졸 흐르다",
+              "<strong>clear</strong> 맑은, 투명한"
+            ]
+          }
+        },
+        {
+          "questionId": 8,
+          "questionTitle": "Question 8",
+          "questionContent": "What created dancing patterns on the forest floor?",
+          "questionCorrectOptionId": 22,
+          "questionOption": [
+            {
+              "optionId": 21,
+              "optionContent": "Raindrops"
+            },
+            {
+              "optionId": 22,
+              "optionContent": "Sunlight"
+            },
+            {
+              "optionId": 23,
+              "optionContent": "Wind"
+            },
+            {
+              "optionId": 24,
+              "optionContent": "Leaves"
+            }
+          ],
+          "questionHelp": {
+            "content": "The sunlight filtered through the dense canopy, creating dancing patterns on the forest floor.<br><strong>햇빛이 빽빽한 숲 덮개를 통해 여과되어<i>sunlight filtered through the dense canopy</i></strong> 숲 바닥에 춤추는 패턴을 만들어냈다는 묘사가 있기 때문에 정답은 B입니다.",
+            "words": [
+              "<strong>filter</strong> 여과되다, 스며들다",
+              "<strong>dense</strong> 빽빽한",
+              "<strong>pattern</strong> 패턴, 무늬"
+            ]
+          }
+        },
+        {
+          "questionId": 9,
+          "questionTitle": "Question 9",
+          "questionContent": "What were the deer doing in the forest?",
+          "questionCorrectOptionId": 26,
+          "questionOption": [
+            {
+              "optionId": 25,
+              "optionContent": "Sleeping"
+            },
+            {
+              "optionId": 26,
+              "optionContent": "Grazing"
+            },
+            {
+              "optionId": 27,
+              "optionContent": "Running"
+            }
+          ],
+          "questionHelp": {
+            "content": "Wildlife thrived, with deer grazing and birds singing joyfully.<br><strong>야생동물들이 번성하며, 사슴은 풀을 뜯고<i>deer grazing</i></strong> 있다는 묘사가 있기 때문에 정답은 B입니다.",
+            "words": [
+              "<strong>graze</strong> 풀을 뜯다",
+              "<strong>wildlife</strong> 야생동물",
+              "<strong>joyfully</strong> 즐겁게"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

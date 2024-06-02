@@ -39,11 +39,12 @@ interface TestFormType {
   questionSet: QuestionSetType[];
 }
 
-interface SetAnswerType {
+interface AnswerSetType {
   questionId: number;
   optionId: number;
 }
-interface TestAnswerType {
+
+interface CompletedSetType {
   questionSetId: number;
-  answers: SetAnswerType[];
+  isCompleted: boolean;
 }
