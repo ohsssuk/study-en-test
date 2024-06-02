@@ -14,3 +14,17 @@ export function findItemFromListById<T>(
     return null;
   }
 }
+
+export function formatTime(seconds: number): string {
+  const minutes: number = Math.floor(seconds / 60);
+  const remainingSeconds: number = seconds % 60;
+
+  const formattedMinutes: string =
+    minutes < 10 ? "0" + minutes : minutes.toString();
+  const formattedSeconds: string =
+    remainingSeconds < 10
+      ? "0" + remainingSeconds
+      : remainingSeconds.toString();
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}

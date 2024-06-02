@@ -8,6 +8,14 @@ import { useEffect, useState } from "react";
 import { ResultType, fetchData } from "@/lib/callAPI";
 import { findItemFromListById } from "@/lib/common";
 import TestHead from "@/components/test/TestHead";
+import FinishTestResult from "./FinishTestResult";
+
+enum TestStatus {
+  BEFORE_TEST = 1,
+  IN_TEST_PROGRESS = 2,
+  IN_TEST_COMPLETED = 3,
+  FINISH_TEST = 4,
+}
 
 export default function Test({ testId }: { testId: number }) {
   // 표시
@@ -17,12 +25,13 @@ export default function Test({ testId }: { testId: number }) {
   const [currentSetIndex, setCurrentSetIndex] = useState<number>(0); // 현재 문제 세트 index
 
   // 사용자 기록
+  const [testStatus, setTestStatus] = useState<TestStatus>(
+    TestStatus.BEFORE_TEST
+  ); // 현태 테스트 상태
   const [answerSet, setAnswerSet] = useState<AnswerSetType[]>([]); // 테스트 답안 전체 데이터
 
   // UX
   const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩
-  const [isTestStart, setIsTestStart] = useState<boolean>(true); // 테스트 시작
-  const [isCompleted, setIsCompleted] = useState<boolean>(false); // 현태 테스트 세트 완료
   const [isTimerOn, setIsTimerOn] = useState<boolean>(false); // 타이머 진행중
 
   let seconds = 0; // 경과 시간 데이터
@@ -62,18 +71,18 @@ export default function Test({ testId }: { testId: number }) {
   };
 
   const handleStartTest = () => {
-    setIsTestStart(true);
+    setTestStatus(TestStatus.IN_TEST_PROGRESS);
     setIsTimerOn(true);
   };
 
   const handleNextSet = () => {
     if (getIsLastSet()) {
-      console.log("last");
+      setTestStatus(TestStatus.FINISH_TEST);
     } else {
       setCurrentSetIndex((prevIndex) => {
         return prevIndex + 1;
       });
-      setIsCompleted(false);
+      setTestStatus(TestStatus.IN_TEST_PROGRESS);
       setIsTimerOn(true);
     }
   };
@@ -101,7 +110,7 @@ export default function Test({ testId }: { testId: number }) {
       return newAnswerSet;
     });
 
-    setIsCompleted(true);
+    setTestStatus(TestStatus.IN_TEST_COMPLETED);
     setIsTimerOn(false);
   };
 
@@ -158,7 +167,8 @@ export default function Test({ testId }: { testId: number }) {
 
   return (
     <>
-      {isTestStart ? (
+      {testStatus === TestStatus.IN_TEST_PROGRESS ||
+      testStatus === TestStatus.IN_TEST_COMPLETED ? (
         <>
           <TestHead
             initSeconds={seconds}
@@ -170,11 +180,21 @@ export default function Test({ testId }: { testId: number }) {
             questionSet={currentQuestionSet}
             checkAnswer={handleCheckAnswer}
             nextSet={handleNextSet}
-            isCompleted={isCompleted}
+            isCompleted={testStatus === TestStatus.IN_TEST_COMPLETED}
           />
         </>
-      ) : (
+      ) : testStatus === TestStatus.BEFORE_TEST ? (
         <BeforeStartTest onClick={handleStartTest} />
+      ) : (
+        <FinishTestResult
+          questionSet={testForm.questionSet}
+          viewSetHelp={function (questionSetId: number): void {
+            console.log(1);
+          }}
+          deleteAnswerData={function (): void {
+            console.log(2);
+          }}
+        />
       )}
     </>
   );

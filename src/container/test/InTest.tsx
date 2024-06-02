@@ -39,7 +39,6 @@ export default function InTest({
         optionId,
       });
     }
-    console.log(addAnswerSet);
   };
 
   const handleClickCTA = () => {

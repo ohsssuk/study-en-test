@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "@/container/test/Test.module.css";
+import { formatTime } from "@/lib/common";
 import { useEffect, useState } from "react";
 
 interface TestHeadProps {
@@ -26,20 +27,6 @@ export default function TestHead({
 
     return () => clearInterval(timer);
   }, [isTimerOn]);
-
-  const formatTime = (seconds: number): string => {
-    const minutes: number = Math.floor(seconds / 60);
-    const remainingSeconds: number = seconds % 60;
-
-    const formattedMinutes: string =
-      minutes < 10 ? "0" + minutes : minutes.toString();
-    const formattedSeconds: string =
-      remainingSeconds < 10
-        ? "0" + remainingSeconds
-        : remainingSeconds.toString();
-
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
 
   return (
     <section id={styles["test_head"]}>
