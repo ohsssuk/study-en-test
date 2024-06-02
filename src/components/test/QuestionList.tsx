@@ -15,6 +15,30 @@ export default function QuestionList({
     onChange(questionId, optionId);
   };
 
+  const getAnswerHeadGradeStyle = ({
+    question,
+    option,
+  }: {
+    question: QuestionType;
+    option: QuestionOptionType;
+  }) => {
+    return isCompleted && !question.isCorrect
+      ? option.optionId === question.questionCorrectOptionId
+        ? {
+            backgroundColor: "#415ef3",
+            color: "#fff",
+            border: "1px solid transparent",
+          }
+        : option.optionId === question.questionUserSelectedOptionId
+        ? {
+            backgroundColor: "#f00",
+            color: "#fff",
+            border: "1px solid transparent",
+          }
+        : {}
+      : {};
+  };
+
   return (
     <ul className={styles["question-list"]}>
       {questionList.map((question) => (
@@ -42,6 +66,7 @@ export default function QuestionList({
                   id={`question_option_${option.optionId}`}
                   name={`question-check-${question.questionId}`}
                   className={`sr-only ${styles["question-option-radio"]}`}
+                  disabled={isCompleted ? true : false}
                   onChange={() =>
                     handleChangeAnswer(question.questionId, option.optionId)
                   }
@@ -50,19 +75,7 @@ export default function QuestionList({
                   htmlFor={`question_option_${option.optionId}`}
                   className={styles["question-option-label"]}
                 >
-                  <span
-                    style={
-                      isCompleted &&
-                      !question.isCorrect &&
-                      option.optionId === question.questionCorrectOptionId
-                        ? {
-                            backgroundColor: "#415ef3",
-                            color: "#fff",
-                            border: "1px solid transparent",
-                          }
-                        : {}
-                    }
-                  >
+                  <span style={getAnswerHeadGradeStyle({ question, option })}>
                     {["A", "B", "C", "D"][index] ?? "?"}
                   </span>
                   <p>{option.optionContent}</p>
@@ -70,6 +83,29 @@ export default function QuestionList({
               </li>
             ))}
           </ul>
+
+          {isCompleted && (
+            <div className={styles.help}>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: question.questionHelp.content,
+                }}
+              />
+              {question.questionHelp.words && (
+                <ul className={styles.words}>
+                  {question.questionHelp.words.map((word) => (
+                    <li>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: word,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </li>
       ))}
     </ul>

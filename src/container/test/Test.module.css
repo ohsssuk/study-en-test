@@ -127,6 +127,32 @@
   background-color: var(--grey900);
   color: var(--grey50);
 }
+#in_test .question-set .question-list .question-help {
+  margin-top: 20px;
+  line-height: 1.6;
+}
+#in_test .help strong {
+  font-weight: 700;
+}
+#in_test .help i {
+  font-style: italic;
+}
+#in_test .help {
+  margin-top: 20px;
+}
+#in_test .help .words {
+  margin-top: 8px;
+  font-size: var(--fs-ml);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+#in_test .help .words > li > p {
+  background: var(--grey200);
+  border-radius: 4px;
+  display: inline-block;
+  padding: 4px 12px;
+}
 
 #in_test .question-cta {
   padding: 0 20px;

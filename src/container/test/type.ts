@@ -3,6 +3,11 @@ interface QuestionOptionType {
   optionContent: string;
 }
 
+interface QuestionHelpType {
+  content: string;
+  words: string[];
+}
+
 interface QuestionType {
   questionId: number;
   questionTitle: string;
@@ -10,6 +15,7 @@ interface QuestionType {
   questionCorrectOptionId: number;
   questionUserSelectedOptionId: number;
   isCorrect: boolean;
+  questionHelp: QuestionHelpType;
   questionOption: QuestionOptionType[];
 }
 

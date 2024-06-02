@@ -17,19 +17,28 @@ export default function QuestionSetContent({
         <h3>{questionSetTitle}</h3>
         <div className={styles.detail}>
           <p>{questionSetContent}</p>
-          <br />
-          {questionSetHelp && questionSetHelp.content && (
-            <p>{questionSetHelp.content}</p>
+          {questionSetHelp && (
+            <div className={styles.help}>
+              {questionSetHelp.content && (
+                <p
+                  dangerouslySetInnerHTML={{ __html: questionSetHelp.content }}
+                />
+              )}
+              {questionSetHelp.words && questionSetHelp.words.length > 0 && (
+                <ul className={styles.words}>
+                  {questionSetHelp.words.map((word, index) => (
+                    <li key={index}>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: word,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           )}
-          {questionSetHelp &&
-            questionSetHelp.words &&
-            questionSetHelp.words.length > 0 && (
-              <ul className={styles.words}>
-                {questionSetHelp.words.map((word, index) => (
-                  <li key={index}>{word}</li>
-                ))}
-              </ul>
-            )}
         </div>
       </div>
     </>
