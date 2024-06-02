@@ -31,11 +31,14 @@ interface QuestionSetType {
   questionSetHelp: QuestionSetHelpType;
   question: QuestionType[];
   isCompleted: boolean;
+  isCorrect: boolean;
   score: number;
+  seconds: number;
 }
 
 interface TestFormType {
   testId: number;
+  score: number;
   questionSet: QuestionSetType[];
 }
 
@@ -44,7 +47,7 @@ interface AnswerSetType {
   optionId: number;
 }
 
-interface CompletedSetType {
+interface TimeSetType {
   questionSetId: number;
-  isCompleted: boolean;
+  seconds: number;
 }

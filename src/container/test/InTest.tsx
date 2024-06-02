@@ -11,14 +11,14 @@ import { findItemFromListById } from "@/lib/common";
 
 interface InTestProps {
   questionSet: QuestionSetType;
-  isCompleted: boolean;
+  buttonCTAText: string;
   checkAnswer: (answerSet: AnswerSetType[]) => void;
   nextSet: () => void;
 }
 
 export default function InTest({
   questionSet,
-  isCompleted,
+  buttonCTAText,
   checkAnswer,
   nextSet,
 }: InTestProps) {
@@ -42,7 +42,7 @@ export default function InTest({
   };
 
   const handleClickCTA = () => {
-    if (isCompleted) {
+    if (questionSet.isCompleted) {
       nextSet();
     } else {
       checkAnswer(addAnswerSet);
@@ -55,19 +55,21 @@ export default function InTest({
         <QuestionSetContent
           questionSetTitle={questionSet.questionSetTitle}
           questionSetContent={questionSet.questionSetContent}
-          questionSetHelp={isCompleted ? questionSet.questionSetHelp : null}
+          questionSetHelp={
+            questionSet.isCompleted ? questionSet.questionSetHelp : null
+          }
         />
         <QuestionList
           questionList={questionSet.question}
           onChange={handleSelectAnswer}
-          isCompleted={isCompleted}
+          isCompleted={questionSet.isCompleted}
         />
       </section>
 
       <section className={styles["question-cta"]}>
         <div className={styles["btn-wrap"]}>
           <CommonBtn isFull={true} size="lg" onClick={handleClickCTA}>
-            {isCompleted ? "다음 문제" : "정답 확인"}
+            {buttonCTAText}
           </CommonBtn>
         </div>
       </section>

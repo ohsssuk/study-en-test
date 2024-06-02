@@ -5,13 +5,13 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { formatTime } from "@/lib/common";
 
 interface FinishTestResultProps {
-  questionSet: QuestionSetType[];
+  testForm: TestFormType;
   viewSetHelp: (questionSetId: number) => void;
   deleteAnswerData: () => void;
 }
 
 export default function FinishTestResult({
-  questionSet,
+  testForm,
   viewSetHelp,
   deleteAnswerData,
 }: FinishTestResultProps) {
@@ -42,6 +42,10 @@ export default function FinishTestResult({
     );
   };
 
+  const allSeconds = testForm.questionSet.reduce((accumulator, questionSet) => {
+    return accumulator + questionSet.seconds;
+  }, 0);
+
   return (
     <article id={styles.finish_test_result}>
       <h2>테스트 결과</h2>
@@ -49,22 +53,24 @@ export default function FinishTestResult({
       <div className={styles["all-result"]}>
         <div className={styles["row"]}>
           <p>총 소요 시간</p>
-          <p>07 : 11</p>
+          <p>{formatTime(allSeconds)}</p>
         </div>
         <div className={styles["row"]}>
           <p>문제 세트별 정오답</p>
-          <p>2 / 5</p>
+          <p>
+            {testForm.score} / {testForm.questionSet.length}
+          </p>
         </div>
       </div>
 
       <ul className={styles["set-result"]}>
-        {questionSet.map((qSet) => (
+        {testForm.questionSet.map((qSet) => (
           <li key={qSet.questionSetId}>
             <h3>{qSet.questionSetTitle}</h3>
             <div className={styles["row"]}>
               <p>소요 시간</p>
               <div className={styles["question-result-time"]}>
-                {formatTime(500)}
+                {formatTime(qSet.seconds)}
               </div>
             </div>
             <div className={styles["row"]}>

@@ -12,12 +12,17 @@ import FinishTestResult from "./FinishTestResult";
 
 enum TestStatus {
   BEFORE_TEST = 1,
-  IN_TEST_PROGRESS = 2,
-  IN_TEST_COMPLETED = 3,
-  FINISH_TEST = 4,
+  IN_TEST = 2,
+  FINISH_TEST = 3,
 }
 
+let initSeconds: number = 0;
+let partSeconds: number = 0; // 세트별 경과 시간
+const answerSet: AnswerSetType[] = []; // 테스트 답안 전체 데이터
+const timeSet: TimeSetType[] = []; // 테스트 답안 소요 시간
+
 export default function Test({ testId }: { testId: number }) {
+  // initSeconds = 10000;
   // 표시
   const [testForm, setTestForm] = useState<TestFormType | null>(null); // 전체 데이터
   const [currentQuestionSet, setCurrentQuestionSet] =
@@ -28,13 +33,10 @@ export default function Test({ testId }: { testId: number }) {
   const [testStatus, setTestStatus] = useState<TestStatus>(
     TestStatus.BEFORE_TEST
   ); // 현태 테스트 상태
-  const [answerSet, setAnswerSet] = useState<AnswerSetType[]>([]); // 테스트 답안 전체 데이터
 
   // UX
   const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩
   const [isTimerOn, setIsTimerOn] = useState<boolean>(false); // 타이머 진행중
-
-  let seconds = 0; // 경과 시간 데이터
 
   useEffect(() => {
     fetchTestData();
@@ -43,8 +45,7 @@ export default function Test({ testId }: { testId: number }) {
   useEffect(() => {
     const timer = setInterval(() => {
       if (isTimerOn) {
-        seconds++;
-        console.log(seconds);
+        partSeconds++;
       }
     }, 1000);
 
@@ -71,46 +72,41 @@ export default function Test({ testId }: { testId: number }) {
   };
 
   const handleStartTest = () => {
-    setTestStatus(TestStatus.IN_TEST_PROGRESS);
+    setTestStatus(TestStatus.IN_TEST);
     setIsTimerOn(true);
   };
 
   const handleNextSet = () => {
+    partSeconds = 0;
+
     if (getIsLastSet()) {
       setTestStatus(TestStatus.FINISH_TEST);
     } else {
       setCurrentSetIndex((prevIndex) => {
         return prevIndex + 1;
       });
-      setTestStatus(TestStatus.IN_TEST_PROGRESS);
+      setTestStatus(TestStatus.IN_TEST);
       setIsTimerOn(true);
     }
   };
 
-  const handleCheckAnswer = (answerSet: AnswerSetType[]) => {
+  const handleCheckAnswer = (addAnswerSet: AnswerSetType[]) => {
     // 답안 전체 기록 갱신
-    setAnswerSet((prevAnswerSet) => {
-      const newAnswerSet = [...prevAnswerSet];
-
-      answerSet.map((answer) => {
-        const findItem = findItemFromListById(
-          newAnswerSet,
-          "questionId",
-          answer.questionId
-        );
-
-        if (findItem) {
-          findItem.optionId = answer.optionId;
-        } else {
-          const { questionId, optionId } = answer;
-          newAnswerSet.push({ questionId, optionId });
-        }
-      });
-
-      return newAnswerSet;
+    addAnswerSet.map((add) => {
+      const { questionId, optionId } = add;
+      answerSet.push({ questionId, optionId });
     });
 
-    setTestStatus(TestStatus.IN_TEST_COMPLETED);
+    // 소요시간 전체 갱신
+    if (currentQuestionSet) {
+      timeSet.push({
+        questionSetId: currentQuestionSet.questionSetId,
+        seconds: partSeconds,
+      });
+    }
+
+    gradeTest(); // 저장된 시간 기록과 답안지를 가지고 채점
+
     setIsTimerOn(false);
   };
 
@@ -125,8 +121,20 @@ export default function Test({ testId }: { testId: number }) {
       }
 
       const newTestForm = { ...prevTestForm };
+      newTestForm.score = 0;
+
       const { questionSet: newQuestionSet } = newTestForm;
       newQuestionSet.forEach((set) => {
+        const findTime = findItemFromListById(
+          timeSet,
+          "questionSetId",
+          set.questionSetId
+        );
+        if (findTime) {
+          set.seconds = findTime.seconds;
+          set.isCompleted = true; // 시간 기록이 있으면 완료로 간주함
+        }
+
         set.score = 0;
         set.question.forEach((question) => {
           const findAnswer = findItemFromListById(
@@ -149,11 +157,39 @@ export default function Test({ testId }: { testId: number }) {
             question.isCorrect = false;
           }
         });
+
+        if (set.score === set.question.length) {
+          newTestForm.score++;
+        }
       });
 
       return newTestForm;
     });
   };
+
+  const handleViewSetHelp = (questionSetId: number) => {
+    if (!testForm) {
+      return;
+    }
+
+    const findSet = findItemFromListById(
+      testForm.questionSet,
+      "questionSetId",
+      questionSetId
+    );
+
+    const findIndex = testForm.questionSet.findIndex(
+      (set) => set.questionSetId === questionSetId
+    );
+    if (findIndex === -1) {
+      return;
+    }
+
+    setCurrentSetIndex(findIndex);
+    setTestStatus(TestStatus.IN_TEST);
+  };
+
+  const handleDeleteAnswerData = () => {};
 
   if (isLoading || !currentQuestionSet) {
     return <div>Loading...</div>;
@@ -167,11 +203,10 @@ export default function Test({ testId }: { testId: number }) {
 
   return (
     <>
-      {testStatus === TestStatus.IN_TEST_PROGRESS ||
-      testStatus === TestStatus.IN_TEST_COMPLETED ? (
+      {testStatus === TestStatus.IN_TEST ? (
         <>
           <TestHead
-            initSeconds={seconds}
+            initSeconds={initSeconds}
             isTimerOn={isTimerOn}
             progressCount={testForm.questionSet.length}
             currentCount={currentSetIndex + 1}
@@ -180,20 +215,22 @@ export default function Test({ testId }: { testId: number }) {
             questionSet={currentQuestionSet}
             checkAnswer={handleCheckAnswer}
             nextSet={handleNextSet}
-            isCompleted={testStatus === TestStatus.IN_TEST_COMPLETED}
+            buttonCTAText={
+              getIsLastSet()
+                ? "테스트 종료"
+                : currentQuestionSet.isCompleted
+                ? "다음 문제"
+                : "정답 확인"
+            }
           />
         </>
       ) : testStatus === TestStatus.BEFORE_TEST ? (
         <BeforeStartTest onClick={handleStartTest} />
       ) : (
         <FinishTestResult
-          questionSet={testForm.questionSet}
-          viewSetHelp={function (questionSetId: number): void {
-            console.log(1);
-          }}
-          deleteAnswerData={function (): void {
-            console.log(2);
-          }}
+          testForm={testForm}
+          viewSetHelp={handleViewSetHelp}
+          deleteAnswerData={handleDeleteAnswerData}
         />
       )}
     </>
