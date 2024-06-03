@@ -48,7 +48,6 @@ export default function Test({ testId }: { testId: number }) {
   const [initSeconds, setInitSeconds] = useState<number>(0);
 
   // UX
-  const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩
   const [isTimerOn, setIsTimerOn] = useState<boolean>(false); // 타이머 진행중
   const [isExsistSavedData, setIsExsistSavedData] = useState<boolean>(false); // 진행중이던 테스트가 있는지
 
@@ -76,21 +75,19 @@ export default function Test({ testId }: { testId: number }) {
   }, [testForm, currentSetIndex]);
 
   const fetchTestData = async () => {
-    setIsLoading(true);
     const { status, data }: ResultType<TestFormType> =
       await fetchData<TestFormType>("/testDB.json");
 
     if (status && data) {
       setTestForm(data);
     }
-    setIsLoading(false);
   };
 
   const fetchSavedData = () => {
     answerSet = loadDataFromLocalStorage(StorageKey.ANSWER, answerSet);
     timeSet = loadDataFromLocalStorage(StorageKey.TIME, timeSet);
 
-    if (answerSet.length > 0 && timeSet.length > 0) {
+    if (timeSet.length > 0) {
       setIsExsistSavedData(true);
     }
   };
@@ -259,13 +256,14 @@ export default function Test({ testId }: { testId: number }) {
     setCurrentSetIndex(0);
     setIsExsistSavedData(false);
     setTestStatus(TestStatus.BEFORE_TEST);
+    partSeconds = 0;
   };
 
   const getIsLastSet = (): boolean => {
     return currentSetIndex + 1 === testForm?.questionSet.length;
   };
 
-  if (isLoading || !testForm) {
+  if (!testForm) {
     return <Loading />;
   }
 
@@ -284,11 +282,13 @@ export default function Test({ testId }: { testId: number }) {
             checkAnswer={handleCheckAnswer}
             nextSet={handleNextSet}
             buttonCTAText={
-              getIsLastSet()
+              currentQuestionSet.isCompleted
+                ? getIsLastSet()
+                  ? "결과 확인"
+                  : "다음 문제"
+                : getIsLastSet()
                 ? "테스트 종료"
-                : currentQuestionSet.isCompleted
-                ? "다음 문제"
-                : "정답 확인"
+                : "다음 문제"
             }
           />
         </>
