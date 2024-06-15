@@ -5,7 +5,7 @@ import "@/styles/reset.css";
 
 export const metadata: Metadata = {
   title: "TEST",
-  description: "",
+  description: "study",
 };
 
 export default function RootLayout({
