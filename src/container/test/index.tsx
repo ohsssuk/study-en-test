@@ -70,7 +70,9 @@ export default function Test({ testId }: { testId: number }) {
 
   const fetchTestData = async () => {
     const { status, data }: ResultType<TestFormType> =
-      await fetchData<TestFormType>("/testDB.json");
+      await fetchData<TestFormType>(
+        "https://ohsssuk.github.io/study-en-test/testDB.json"
+      );
 
     if (status && data) {
       setTestForm(data);
