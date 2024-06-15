@@ -1,7 +1,6 @@
 name: GitHub Pages Deploy
 
 on:
-  # 수동으로 동작
   workflow_dispatch:
 
   # schedule
