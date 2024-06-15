@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
+# 실행 방법
 
 ```bash
+npm install next
+# next 설치
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# dev 실행
+
+npm run buld
+# 빌드
+
+npm run start
+# prod 실행
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# 프로젝트 구조 및 역할 설명
 
-## Learn More
+## 목적
 
-To learn more about Next.js, take a look at the following resources:
+- next.js 학습용 문제풀이 프로토타입 기능 개발
+- 각 문제세트가 2~4개의 문제, 해설, 지문을 포함
+- 각 문제는 2~4개의 객관식 선택지, 해설, 지문, 정답을 포함
+- 사용자는 세트를 풀이하고 정답 확인시 해설을 볼 수 있음
+- 테스트에 해당하는 모든 문제를 풀면 결과창에서 각 세트의 해설로 넘어갈 수 있음
+- 모든 과정은 세트 풀이 단위로 로컬스토리지에 저장
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 페이지 (Page)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+**역할**
 
-## Deploy on Vercel
+- 라우팅 기능
+- 메타데이터 정보
+- 하나 또는 여러 개의 Container를 조합하여 구성
+  - 예: `/test` 페이지는 Header, Footer 컴포넌트와 Test 컨테이너로 구성
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 컨테이너 (Container)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**역할**
+
+- 독립적인 기능을 수행하는 페이지 모듈 단위
+- 페이지와 1:1 대응
+- 재사용성 낮음
+- 비즈니스 로직이 위치
+
+**분리 기준**
+
+- SSR, CSR 방식 분류
+- 의미상의 기능 단위
+- 상태에 따라 화면이 크게 바뀌는 경우 하위 Container로 분리하여 사용
+
+## 컴포넌트 (Component)
+
+**역할**
+
+- 재사용성이 높은 UI 단위 요소(버튼, 아이콘, 로딩 등)
+- 재사용성이 낮아도 반복되거나 의미상 분리되는 경우에 사용(QuestionList, Question, OptionList)
+
+---
+
+# 테스트 관련 설명
+
+## 테스트 컨테이너 (Test Container)
+
+**데이터 구성**
+
+- 표시용 데이터
+  - 모든 사용자에게 동일하게 보여지는 정적 데이터(API 가정)
+  - 문제세트, 문제, 선택지, 해설 등
+- 사용자별 기록 데이터
+  - 문제와 선택한 답
+  - 문제세트별 경과시간(해당 기록이 완료 여부도 판단)
+
+**페이지 상태**
+
+1. 테스트 시작 전
+2. 테스트 진행 중
+   - 사용자가 세트 완료 기록이 있는 경우: 해설 상태
+   - 사용자가 세트 완료 기록이 없는 경우: 문제 풀기 상태
+3. 테스트 종료
+
+**컨테이너 구조**
+
+- index.ts : 테스트 컨테이너 가장 상위 부분으로 모든 비지니스 로직이 위치하고 나머지 컨테이너, 컴포넌트는 값을 전달 받아서 화면을 표시하는 역할만 수행
+  - BeforeStartTest : 테스트 시작전 화면
+  - InTest : 테스트 수행중
+    - TestHead: 타이머와 진행상태가 표시됨. 반복 리렌더링 위해 분리
+    - QuestionSetContent : 문제 세트 공통 지문
+    - QuestionList : 문제 세트
+      - Question: 문제
+        - OptionList : 선택지
+  - FinishTestResult : 테스트 완료 결과 표시
+
+**동작**
+
+1. 페이지 진입시 테스트 관련 정적 데이터 전체 로드 [테스트 시작 전]
+2. 이전에 진행 중이던 기록(로컬 스토리지)이 있을 경우 **사용자 기록과 정적 데이터를 조합**하여 **<가칭: 채점>**. 테스트 관련 데이터를 전체 수정(점수, 완료 여부, 사용자가 선택한 답, 세트별 소요시간 등을 갱신)
+   - 테스트 관련 데이터를 다시 확인하여 아직 완료하지 않은 문제세트로 이동[테스트 진행중]
+   - 전체 완료 했다면 [테스트 종료] 상태로 전환
+3. 시작시 [테스트 진행중]으로 상태 전환
+4. 정답 확인 버튼 클릭시에만 현재 진행중인 모든 기록을 저장 (로컬 스토리지를 사용하여 데이터 보존)
+   - 문제에 대한 선택한 답, 소요 시간 저장
+   - <채점>하여 문제 세트의 상태가 완료로 바뀌면 해설 화면으로 전환
+5. 4, 5를 반복하여 전체 완료하면 [테스트 종료] 상태로 전환
+6. 결과화면 기능
+   - 각 세트 별 해설 보기를 클릭하면 [테스트 진행중] 상태로 전환. 해당 세트는 이미 완료 되었기 때문에 해설 화면을 노출
+   - 테스트 재시작 하면 모든 데이터를 리셋하고 (로컬 스토리지 삭제) [테스트 시작전] 상태로 전환
