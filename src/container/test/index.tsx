@@ -3,19 +3,13 @@
 import BeforeStartTest from "@/container/test/BeforeStartTest";
 import InTest from "./InTest";
 
-import styles from "./Test.module.css";
 import { useEffect, useState } from "react";
 import { ResultType, fetchData } from "@/lib/callAPI";
 import { findItemFromListById } from "@/lib/common";
 import TestHead from "@/components/test/TestHead";
 import FinishTestResult from "./FinishTestResult";
-import { useRouter } from "next/navigation";
 import Loading from "@/components/loading";
-import {
-  clearLocalStorage,
-  loadDataFromLocalStorage,
-  saveDataToLocalStorage,
-} from "@/lib/storage";
+import { useTestStore } from "@/store/useTestStore";
 
 enum TestStatus {
   BEFORE_TEST = 1,
@@ -23,17 +17,10 @@ enum TestStatus {
   FINISH_TEST = 3,
 }
 
-enum StorageKey {
-  TIME = "testQuestionSetTime",
-  ANSWER = "testQuestionAnswer",
-}
-
 let partSeconds: number = 0; // 세트별 경과 시간
-let answerSet: AnswerSetType[] = []; // 테스트 답안 전체 데이터
-let timeSet: TimeSetType[] = []; // 테스트 답안 소요 시간
 
 export default function Test({ testId }: { testId: number }) {
-  const router = useRouter();
+  const { answerSet, timeSet, addAnswer, addTime, reset } = useTestStore();
 
   // 표시
   const [testForm, setTestForm] = useState<TestFormType | null>(null); // 전체 데이터
@@ -41,20 +28,27 @@ export default function Test({ testId }: { testId: number }) {
     useState<QuestionSetType | null>(null); // 현재 표시되는 문제 세트
   const [currentSetIndex, setCurrentSetIndex] = useState<number>(0); // 현재 문제 세트 index
 
-  // 사용자 기록
+  // 현태 테스트 진행 상태
   const [testStatus, setTestStatus] = useState<TestStatus>(
     TestStatus.BEFORE_TEST
-  ); // 현태 테스트 진행 상태
+  );
   const [initSeconds, setInitSeconds] = useState<number>(0);
 
   // UX
   const [isTimerOn, setIsTimerOn] = useState<boolean>(false); // 타이머 진행중
-  const [isExsistSavedData, setIsExsistSavedData] = useState<boolean>(false); // 진행중이던 테스트가 있는지
+  const [isExistSavedData, setIsExistSavedData] = useState<boolean>(false); // 진행중이던 테스트가 있는지
 
   useEffect(() => {
-    fetchSavedData();
     fetchTestData();
   }, []);
+
+  useEffect(() => {
+    if (timeSet.length > 0) {
+      setIsExistSavedData(true);
+    }
+
+    gradeTest();
+  }, [timeSet]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -83,19 +77,10 @@ export default function Test({ testId }: { testId: number }) {
     }
   };
 
-  const fetchSavedData = () => {
-    answerSet = loadDataFromLocalStorage(StorageKey.ANSWER, answerSet);
-    timeSet = loadDataFromLocalStorage(StorageKey.TIME, timeSet);
-
-    if (timeSet.length > 0) {
-      setIsExsistSavedData(true);
-    }
-  };
-
   const handleStartTest = () => {
     setTestStatus(TestStatus.IN_TEST);
 
-    if (isExsistSavedData) {
+    if (isExistSavedData) {
       loadExistData();
     } else {
       setIsTimerOn(true);
@@ -108,6 +93,7 @@ export default function Test({ testId }: { testId: number }) {
         return accumulator + set.seconds;
       }, 0)
     );
+
     gradeTest();
 
     if (testForm?.isCompleted) {
@@ -138,24 +124,19 @@ export default function Test({ testId }: { testId: number }) {
   const handleCheckAnswer = (addAnswerSet: AnswerSetType[]) => {
     setIsTimerOn(false);
 
-    // 답안 전체 기록 갱신
+    // 세트 답안 저장
     addAnswerSet.map((add) => {
       const { questionId, optionId } = add;
-      answerSet.push({ questionId, optionId });
+      addAnswer({ questionId, optionId });
     });
 
-    // 소요시간 전체 갱신
+    // 세 소요시간 저장
     if (currentQuestionSet) {
-      timeSet.push({
+      addTime({
         questionSetId: currentQuestionSet.questionSetId,
         seconds: partSeconds,
       });
     }
-
-    saveDataToLocalStorage(StorageKey.TIME, timeSet);
-    saveDataToLocalStorage(StorageKey.ANSWER, answerSet);
-
-    gradeTest(); // 저장된 시간 기록과 답안지를 가지고 채점
   };
 
   const gradeTest = () => {
@@ -247,14 +228,13 @@ export default function Test({ testId }: { testId: number }) {
   };
 
   const handleDeleteAnswerData = () => {
-    clearLocalStorage(StorageKey.TIME);
-    clearLocalStorage(StorageKey.ANSWER);
+    reset();
     answerSet.length = 0;
     timeSet.length = 0;
     setInitSeconds(0);
     fetchTestData();
     setCurrentSetIndex(0);
-    setIsExsistSavedData(false);
+    setIsExistSavedData(false);
     setTestStatus(TestStatus.BEFORE_TEST);
     partSeconds = 0;
   };
@@ -295,7 +275,7 @@ export default function Test({ testId }: { testId: number }) {
       ) : testStatus === TestStatus.BEFORE_TEST ? (
         <BeforeStartTest
           startTest={handleStartTest}
-          isExsistSavedData={isExsistSavedData}
+          isExistSavedData={isExistSavedData}
         />
       ) : (
         <FinishTestResult

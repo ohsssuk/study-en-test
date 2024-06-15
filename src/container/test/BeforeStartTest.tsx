@@ -8,12 +8,12 @@ import CommonBtn from "@/components/commonBtn";
 
 interface BeforeStartTestProps {
   startTest: () => void;
-  isExsistSavedData: boolean;
+  isExistSavedData: boolean;
 }
 
 export default function BeforeStartTest({
   startTest,
-  isExsistSavedData,
+  isExistSavedData,
 }: BeforeStartTestProps) {
   useEffect(() => {
     new BgEffect({
@@ -37,9 +37,9 @@ export default function BeforeStartTest({
     <>
       <canvas id="bg_effect" className="fixed inset-0 w-full h-full"></canvas>
       <article id={styles.before_start_test}>
-        <h2>{!isExsistSavedData ? "Start" : "Continue"} Test!</h2>
+        <h2>{!isExistSavedData ? "Start" : "Continue"} Test!</h2>
         <CommonBtn size="lg" onClick={handleClickStartTest}>
-          {!isExsistSavedData ? "테스트 시작" : "이어서 계속 하기"}
+          {!isExistSavedData ? "테스트 시작" : "이어서 계속 하기"}
         </CommonBtn>
       </article>
     </>
