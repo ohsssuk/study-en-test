@@ -10,6 +10,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  assetPrefix:
+    process.env.NODE_ENV === "production"
+      ? "https://ohsssuk.github.io/study-en-test"
+      : "",
 };
 
 export default nextConfig;
